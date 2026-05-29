@@ -5,17 +5,17 @@ const projects = [
   {
     title: 'Business Website',
     category: 'Corporate',
-    image: "./public/Lead.png",
+    image: "./Lead.png",
   },
   {
     title: 'E-commerce Store',
     category: 'Fashion',
-    image: "./public/e-commerce.png",
+    image: "./e-commerce.png",
   },
   {
     title: 'Admin Dashboard',
     category: 'SaaS Platform',
-    image: "./public/admin.png",
+    image: "./admin.png",
   },
 ];
 
