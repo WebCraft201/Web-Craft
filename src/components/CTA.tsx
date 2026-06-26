@@ -1,6 +1,5 @@
 import { ArrowRight, CheckCircle2, Mail, MapPin, Phone, Sparkles, XCircle } from 'lucide-react';
 import { FormEvent, useState } from 'react';
-import emailjs from '@emailjs/browser';
 
 type FormValues = {
   fullName: string;
@@ -35,20 +34,20 @@ const contactItems = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'webcraft200@gmail.com',
-    href: 'mailto:webcraft200@gmail.com',
+    value: 'official@web-craft.in',
+    href: 'mailto:official@web-craft.in',
   },
   {
     icon: Phone,
     label: 'Phone',
     value: '+91 (9310120456)',
-    href: 'tel:+15551234567',
+    href: 'tel:+919310120456',
   },
   {
     icon: MapPin,
     label: 'Location',
     value: 'New Delhi, India',
-    href:"https://www.google.com/maps/place/New+Delhi/",
+    href: "https://www.google.com/maps/place/New+Delhi/",
   },
 ];
 
@@ -57,6 +56,8 @@ function CTA() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+
 
   const updateField = (field: keyof FormValues, value: string) => {
     setFormValues((currentValues) => ({
@@ -72,17 +73,12 @@ function CTA() {
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSending(true);
     setSuccessMessage('');
     setErrorMessage('');
-
-    // Setup your EmailJS credentials:
-    // You can replace these strings directly, or configure Vite environment variables
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fr8g3bi';
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_dc2xcz1';
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Fxd7ZSxpBYcyWsOAz';
 
     const templateParams = {
       from_name: formValues.fullName,
@@ -93,21 +89,31 @@ function CTA() {
       message: formValues.message,
     };
 
-    emailjs.send(serviceId, templateId, templateParams, publicKey)
-      .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
-        setSuccessMessage('Thank you! Your message has been sent successfully.');
+    try {
+      const res = await fetch("/api/contact.js", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues)
+      })
+      const data = await res.json()
+      console.log(data)
+      if (data.success) {
+        setSuccessMessage("Thank you! Your message has been sent successfully.");
         setFormValues(initialFormValues);
-      })
-      .catch((error) => {
-        console.error('FAILED...', error);
-        setErrorMessage('Oops! Something went wrong. Please check your network or try again.');
-      })
-      .finally(() => {
-        setIsSending(false);
-      });
-  };
+      } else {
+        setErrorMessage(data.message || "Failed to send email.");
+      }
 
+    } catch (err: any) {
+      setErrorMessage(err)
+    }
+    finally {
+      setIsSending(false);
+    }
+
+  }
   return (
     <section id="contact" className="pb-16 sm:pb-20">
       <div className="container-page">
@@ -197,7 +203,7 @@ function CTA() {
                       type="email"
                       value={formValues.email}
                       onChange={(event) => updateField('email', event.target.value)}
-                      placeholder="webcraft200@gmail.com"
+                      placeholder="official@web-craft.in"
                       required
                       disabled={isSending}
                       className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-navy outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 dark:border-white/10 dark:bg-slate-950/45 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-cyan-300 disabled:opacity-60"
@@ -296,5 +302,5 @@ function CTA() {
     </section>
   );
 }
-
 export default CTA;
+

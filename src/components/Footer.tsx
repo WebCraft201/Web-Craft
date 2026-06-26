@@ -94,8 +94,8 @@ function Footer() {
               </li>
               <li className="flex gap-3">
                 <Mail className="mt-0.5 shrink-0 text-primary-600" size={18} />
-                <a href="mailto:webcraft200@gmail.com" className="transition hover:text-primary-600">
-                  webcraft200@gmail.com
+                <a href="mailto:official@web-craft.in" className="transition hover:text-primary-600">
+                  official@web-craft.in
                 </a>
               </li>
             </ul>
